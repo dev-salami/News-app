@@ -18,7 +18,7 @@ function App() {
           <Route exact path="/" element={<News />}></Route>
           <Route path="/Business" element={<Business />}></Route>
           <Route path="/Football" element={<Football />}></Route>
-          <Route path="/Tech" element={<Tech />}></Route>
+          <Route path="/Technology" element={<Tech />}></Route>
           <Route path="/World" element={<World />}></Route>
         </Routes>
       </div>
