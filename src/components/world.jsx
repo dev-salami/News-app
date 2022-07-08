@@ -211,7 +211,7 @@ function World() {
 
   return (
     <div>
-      <section className="container mx-auto">
+      <section className="container mx-auto pt-[100px]">
         <div className=" gap-6 p-6  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
           {News.map((item, id) => (
             <Item key={id} item={item} />
