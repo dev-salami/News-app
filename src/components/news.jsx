@@ -1,5 +1,7 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import moment from "moment";
+import Loader from "./loader";
 import Item from "./item";
 function News() {
   const [News, setNews] = useState([]);
@@ -11,14 +13,22 @@ function News() {
   const [Four, setFour] = useState(false);
 
   const [Five, setFive] = useState(false);
+  const [Loading, setLoading] = useState(true);
+
+  const [Error, setError] = useState("");
+  const [AError, setAError] = useState("");
+
+  const Date = moment().subtract(1, "days").calendar();
+  const Dat = moment(Date).format("L");
 
   const Fetchone = (e) => {
+    setLoading(true);
+    e.preventDefault();
     setOne(true);
     setTwo(false);
     setThree(false);
     setFour(false);
     setFive(false);
-    e.preventDefault();
     const options = {
       method: "GET",
       url: "https://free-news.p.rapidapi.com/v1/search",
@@ -39,14 +49,75 @@ function News() {
       .then(function (response) {
         console.log(response.data.articles);
         setNews(response.data.articles);
+        setLoading(false);
+
+        console.log(News);
+        setError("");
+      })
+      .catch(function (error) {
+        console.error(error);
+        setLoading(false);
+        setError("NETWORK ERROR");
+      });
+  };
+  useEffect(() => {
+    console.log(Date);
+    console.log(Dat);
+
+    setOne(true);
+    setTwo(false);
+    setThree(false);
+    setFour(false);
+    setFive(false);
+    const options = {
+      method: "GET",
+      url: "https://free-news.p.rapidapi.com/v1/search",
+      params: {
+        q: " politics || Biden || Trump || Korea || Russia || War || Election ||Impeach || Elect || Senator || Governor || President || Minister ",
+        lang: "en",
+        page: "1",
+        page_size: 24,
+      },
+      headers: {
+        "X-RapidAPI-Key": "9afcd5f4f4msh06893889a8220e8p159a8ajsn9b8bfac23ce4",
+        "X-RapidAPI-Host": "free-news.p.rapidapi.com",
+      },
+    };
+
+    axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data.articles);
+        setNews(response.data.articles);
+        setError("");
+        setLoading(false);
 
         console.log(News);
       })
       .catch(function (error) {
-        //   console.error(error);
+        console.log(News.length);
+
+        if (
+          error.message === "Request failed with status code 429" &&
+          News.length === 0
+        ) {
+          setAError("API ERROR");
+          setLoading(false);
+          console.log(News.length);
+        }
+        console.log(error);
+        setTimeout(() => {
+          if (error.message === "Network Error" && News.length === 0) {
+            setError(error.message);
+            setLoading(true);
+          }
+        }, 5000);
       });
-  };
+  }, []);
+
   const Fetchtwo = (e) => {
+    setLoading(true);
+
     setOne(false);
     setTwo(true);
     setThree(false);
@@ -73,14 +144,20 @@ function News() {
       .then(function (response) {
         console.log(response.data.articles);
         setNews(response.data.articles);
+        setLoading(false);
+        setError("");
 
         console.log(News);
       })
       .catch(function (error) {
-        //   console.error(error);
+        console.error(error);
+        setLoading(false);
+        setError("NETWORK ERROR");
       });
   };
   const Fetchtre = (e) => {
+    setLoading(true);
+
     setOne(false);
     setTwo(false);
     setThree(true);
@@ -107,14 +184,20 @@ function News() {
       .then(function (response) {
         console.log(response.data.articles);
         setNews(response.data.articles);
+        setLoading(false);
+        setError("");
 
         console.log(News);
       })
       .catch(function (error) {
-        //   console.error(error);
+        console.error(error);
+        setLoading(false);
+        setError("NETWORK ERROR");
       });
   };
   const Fetchfor = (e) => {
+    setLoading(true);
+
     setOne(false);
     setTwo(false);
     setThree(false);
@@ -141,15 +224,21 @@ function News() {
       .then(function (response) {
         console.log(response.data.articles);
         setNews(response.data.articles);
+        setLoading(false);
+        setError("");
 
         console.log(News);
       })
       .catch(function (error) {
-        //   console.error(error);
+        console.error(error);
+        setLoading(false);
+        setError("NETWORK ERROR");
       });
   };
 
   const Fetchfive = (e) => {
+    setLoading(true);
+
     setOne(false);
     setTwo(false);
     setThree(false);
@@ -176,49 +265,41 @@ function News() {
       .then(function (response) {
         console.log(response.data.articles);
         setNews(response.data.articles);
+        setLoading(false);
+        setError("");
 
         console.log(News);
       })
-      .catch(function (error) {
-        //   console.error(error);
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+        setError("NETWORK ERROR");
       });
   };
-  const options = {
-    method: "GET",
-    url: "https://free-news.p.rapidapi.com/v1/search",
-    params: {
-      q: " politics || Biden || Trump || Korea || Russia || War || Election ||Impeach || Elect || Senator || Governor || President || Minister ",
-      lang: "en",
-      page_size: "24",
-    },
-    headers: {
-      "X-RapidAPI-Key": "9afcd5f4f4msh06893889a8220e8p159a8ajsn9b8bfac23ce4",
-      "X-RapidAPI-Host": "free-news.p.rapidapi.com",
-    },
-  };
-
-  axios
-    .request(options)
-    .then(function (response) {
-      console.log(response.data.articles);
-      setNews(response.data.articles);
-
-      console.log(News);
-    })
-    .catch(function (error) {
-      //   console.error(error);
-    });
 
   return (
-    <div>
-      <section className="container mx-auto pt-[100px]">
-        <div className=" gap-6 p-6  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
-          {News.map((item, id) => (
-            <Item key={id} item={item} />
-          ))}
-        </div>
+    <div className="min-h-screen">
+      <section className="  pt-[100px]">
+        {!Loading && (
+          <div className="text text-6xl  flex justify-center text-red-600 px-20">
+            {Error}
+          </div>
+        )}
+        {!News && (
+          <div className="text text-6xl  flex justify-center text-red-600 px-20">
+            {AError}
+          </div>
+        )}
+        {Loading && <Loader />}
+        {!Loading && (
+          <div className=" gap-6 p-6  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
+            {News.map((item, id) => (
+              <Item key={id} item={item} />
+            ))}
+          </div>
+        )}
       </section>
-      <section className="bg-red-200 py-20">
+      <section className="bg-red-200 py-2 relative left-0 right-0 bottom-0">
         <div className="flex justify-center">
           <nav aria-label="Page navigation example">
             <ul className="flex space-x-3 list-style-none">
@@ -226,8 +307,8 @@ function News() {
                 <a
                   className={
                     One
-                      ? "page-link relative block py-1.5 px-3 border-0 bg-blue-600 outline-none transition-all duration-300 rounded-full text-white hover:text-white hover:bg-blue-600 shadow-md focus:shadow-md"
-                      : "page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded-full text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+                      ? "page-link relative block py-1.5 px-3 border-0 bg-blue-600 outline-none transition-all duration-300 rounded-full text-white   shadow-md focus:shadow-md"
+                      : "page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded-full text-gray-800  hover:bg-gray-200 focus:shadow-none"
                   }
                   href="/"
                 >
@@ -238,8 +319,8 @@ function News() {
                 <a
                   className={
                     Two
-                      ? "page-link relative block py-1.5 px-3 border-0 bg-blue-600 outline-none transition-all duration-300 rounded-full text-white hover:text-white hover:bg-blue-600 shadow-md focus:shadow-md"
-                      : "page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded-full text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+                      ? "page-link relative block py-1.5 px-3 border-0 bg-blue-600 outline-none transition-all duration-300 rounded-full text-white  hover:bg-blue-600 shadow-md focus:shadow-md"
+                      : "page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded-full text-gray-800  hover:bg-gray-200 focus:shadow-none"
                   }
                   href="/"
                 >
@@ -250,8 +331,8 @@ function News() {
                 <a
                   className={
                     Three
-                      ? "page-link relative block py-1.5 px-3 border-0 bg-blue-600 outline-none transition-all duration-300 rounded-full text-white hover:text-white hover:bg-blue-600 shadow-md focus:shadow-md"
-                      : "page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded-full text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+                      ? "page-link relative block py-1.5 px-3 border-0 bg-blue-600 outline-none transition-all duration-300 rounded-full text-white  hover:bg-blue-600 shadow-md focus:shadow-md"
+                      : "page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded-full text-gray-800  hover:bg-gray-200 focus:shadow-none"
                   }
                   href="/"
                 >
@@ -262,8 +343,8 @@ function News() {
                 <a
                   className={
                     Four
-                      ? "page-link relative block py-1.5 px-3 border-0 bg-blue-600 outline-none transition-all duration-300 rounded-full text-white hover:text-white hover:bg-blue-600 shadow-md focus:shadow-md"
-                      : "page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded-full text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+                      ? "page-link relative block py-1.5 px-3 border-0 bg-blue-600 outline-none transition-all duration-300 rounded-full text-white  hover:bg-blue-600 shadow-md focus:shadow-md"
+                      : "page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded-full text-gray-800  hover:bg-gray-200 focus:shadow-none"
                   }
                   href="/"
                 >
@@ -274,8 +355,8 @@ function News() {
                 <a
                   className={
                     Five
-                      ? "page-link relative block py-1.5 px-3 border-0 bg-blue-600 outline-none transition-all duration-300 rounded-full text-white hover:text-white hover:bg-blue-600 shadow-md focus:shadow-md"
-                      : "page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded-full text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+                      ? "page-link relative block py-1.5 px-3 border-0 bg-blue-600 outline-none transition-all duration-300 rounded-full text-white  hover:bg-blue-600 shadow-md focus:shadow-md"
+                      : "page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded-full text-gray-800  hover:bg-gray-200 focus:shadow-none"
                   }
                   href="/"
                 >

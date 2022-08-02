@@ -15,7 +15,7 @@ function Navbar() {
             <ul className="text-white text-base  font-medium hidden sm:flex space-x-6">
               <NavLink
                 to="/"
-                activeclassname="text-orange-400"
+                activeclassName="text-orange-400"
                 className="hover:text-[#00d8ff] transition-all duration-300 px-2 py-1 cursor-pointer"
               >
                 Politics
